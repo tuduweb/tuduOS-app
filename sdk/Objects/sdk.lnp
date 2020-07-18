@@ -1,0 +1,8 @@
+--cpu Cortex-M3
+".\objects\startup.o"
+".\objects\main.o"
+".\objects\syscall.o"
+--library_type=microlib --strict --scatter ".\Objects\sdk.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\sdk.map" -o .\Objects\sdk.axf
