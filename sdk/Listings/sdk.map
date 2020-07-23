@@ -7,6 +7,7 @@ Section Cross References
     startup.o(RESET) refers to startup.o(STACK) for __initial_sp
     startup.o(RESET) refers to startup.o(.text) for Reset_Handler
     startup.o(.text) refers to entry.o(.ARM.Collect$$$$00000000) for __main
+    main.o(i.main) refers to syscall_1.o(.text) for syscall
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry10a.o(.ARM.Collect$$$$0000000D) for __rt_final_cpp
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry11a.o(.ARM.Collect$$$$0000000F) for __rt_final_exit
     entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry7b.o(.ARM.Collect$$$$00000008) for _main_clock
@@ -29,9 +30,9 @@ Section Cross References
 Removing Unused input sections from the image.
 
     Removing startup.o(HEAP), (512 bytes).
-    Removing syscall.o(i.syscall), (8 bytes).
+    Removing syscall.o(i.syscall_c), (10 bytes).
 
-2 unused section(s) (total 520 bytes) removed from the image.
+2 unused section(s) (total 522 bytes) removed from the image.
 
 ==============================================================================
 
@@ -42,25 +43,26 @@ Image Symbol Table
     Symbol Name                              Value     Ov Type        Size  Object(Section)
 
     RESET                                    0x00000000   Section        8  startup.o(RESET)
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
     handlers.s                               0x00000000   Number         0  handlers.o ABSOLUTE
     init.s                                   0x00000000   Number         0  init.o ABSOLUTE
     main.c                                   0x00000000   Number         0  main.o ABSOLUTE
     startup.s                                0x00000000   Number         0  startup.o ABSOLUTE
     syscall.c                                0x00000000   Number         0  syscall.o ABSOLUTE
+    syscall.s                                0x00000000   Number         0  syscall_1.o ABSOLUTE
     .ARM.Collect$$$$00000000                 0x00000008   Section        0  entry.o(.ARM.Collect$$$$00000000)
     .ARM.Collect$$$$00000001                 0x00000008   Section        4  entry2.o(.ARM.Collect$$$$00000001)
     .ARM.Collect$$$$00000004                 0x0000000c   Section        4  entry5.o(.ARM.Collect$$$$00000004)
@@ -72,11 +74,12 @@ Image Symbol Table
     .ARM.Collect$$$$00002712                 0x00000018   Section        4  entry2.o(.ARM.Collect$$$$00002712)
     __lit__00000000                          0x00000018   Data           4  entry2.o(.ARM.Collect$$$$00002712)
     .text                                    0x0000001c   Section       12  startup.o(.text)
-    .text                                    0x00000028   Section       36  init.o(.text)
-    i.__scatterload_copy                     0x0000004c   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x0000005a   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x0000005c   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i.main                                   0x0000006a   Section        0  main.o(i.main)
+    .text                                    0x00000028   Section       22  syscall_1.o(.text)
+    .text                                    0x00000040   Section       36  init.o(.text)
+    i.__scatterload_copy                     0x00000064   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x00000072   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x00000074   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.main                                   0x00000082   Section        0  main.o(i.main)
     STACK                                    0x20000000   Section     1024  startup.o(STACK)
 
     Global Symbols
@@ -103,14 +106,15 @@ Image Symbol Table
     __rt_final_cpp                           0x00000019   Thumb Code     0  entry10a.o(.ARM.Collect$$$$0000000D)
     __rt_final_exit                          0x00000019   Thumb Code     0  entry11a.o(.ARM.Collect$$$$0000000F)
     Reset_Handler                            0x0000001d   Thumb Code     4  startup.o(.text)
-    __scatterload                            0x00000029   Thumb Code    28  init.o(.text)
-    __scatterload_rt2                        0x00000029   Thumb Code     0  init.o(.text)
-    __scatterload_copy                       0x0000004d   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x0000005b   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x0000005d   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    main                                     0x0000006b   Thumb Code     4  main.o(i.main)
-    Region$$Table$$Base                      0x00000070   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x00000080   Number         0  anon$$obj.o(Region$$Table)
+    syscall                                  0x00000029   Thumb Code     0  syscall_1.o(.text)
+    __scatterload                            0x00000041   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x00000041   Thumb Code     0  init.o(.text)
+    __scatterload_copy                       0x00000065   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x00000073   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x00000075   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    main                                     0x00000083   Thumb Code    28  main.o(i.main)
+    Region$$Table$$Base                      0x000000a0   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000000b0   Number         0  anon$$obj.o(Region$$Table)
     __initial_sp                             0x20000400   Data           0  startup.o(STACK)
 
 
@@ -121,33 +125,35 @@ Memory Map of the image
 
   Image Entry point : 0x00000009
 
-  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x00000080, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x00000000, Size: 0x000000b0, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x00000080, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x000000b0, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x00000000   0x00000000   0x00000008   Data   RO            3    RESET               startup.o
-    0x00000008   0x00000008   0x00000000   Code   RO           33  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x00000008   0x00000008   0x00000004   Code   RO           36    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x0000000c   0x0000000c   0x00000004   Code   RO           39    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x00000010   0x00000010   0x00000000   Code   RO           41    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x00000010   0x00000010   0x00000000   Code   RO           43    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x00000010   0x00000010   0x00000008   Code   RO           44    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x00000018   0x00000018   0x00000000   Code   RO           46    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x00000018   0x00000018   0x00000000   Code   RO           48    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x00000018   0x00000018   0x00000004   Code   RO           37    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x00000008   0x00000008   0x00000000   Code   RO           36  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x00000008   0x00000008   0x00000004   Code   RO           39    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x0000000c   0x0000000c   0x00000004   Code   RO           42    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x00000010   0x00000010   0x00000000   Code   RO           44    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x00000010   0x00000010   0x00000000   Code   RO           46    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x00000010   0x00000010   0x00000008   Code   RO           47    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x00000018   0x00000018   0x00000000   Code   RO           49    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x00000018   0x00000018   0x00000000   Code   RO           51    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x00000018   0x00000018   0x00000004   Code   RO           40    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x0000001c   0x0000001c   0x0000000c   Code   RO            4    .text               startup.o
-    0x00000028   0x00000028   0x00000024   Code   RO           50    .text               mc_w.l(init.o)
-    0x0000004c   0x0000004c   0x0000000e   Code   RO           54    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x0000005a   0x0000005a   0x00000002   Code   RO           55    i.__scatterload_null  mc_w.l(handlers.o)
-    0x0000005c   0x0000005c   0x0000000e   Code   RO           56    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x0000006a   0x0000006a   0x00000004   Code   RO           10    i.main              main.o
-    0x0000006e   0x0000006e   0x00000002   PAD
-    0x00000070   0x00000070   0x00000010   Data   RO           52    Region$$Table       anon$$obj.o
+    0x00000028   0x00000028   0x00000016   Code   RO           33    .text               syscall_1.o
+    0x0000003e   0x0000003e   0x00000002   PAD
+    0x00000040   0x00000040   0x00000024   Code   RO           53    .text               mc_w.l(init.o)
+    0x00000064   0x00000064   0x0000000e   Code   RO           57    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x00000072   0x00000072   0x00000002   Code   RO           58    i.__scatterload_null  mc_w.l(handlers.o)
+    0x00000074   0x00000074   0x0000000e   Code   RO           59    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x00000082   0x00000082   0x0000001c   Code   RO           10    i.main              main.o
+    0x0000009e   0x0000009e   0x00000002   PAD
+    0x000000a0   0x000000a0   0x00000010   Data   RO           55    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x00000080, Size: 0x00000400, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x000000b0, Size: 0x00000400, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -161,13 +167,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-         4          0          0          0          0       1799   main.o
+        28          0          0          0          0       1903   main.o
         12          6          8          0       1024        316   startup.o
+        22          0          0          0          0        196   syscall_1.o
 
     ----------------------------------------------------------------------
-        18          6         24          0       1024       2115   Object Totals
+        66          6         24          0       1024       2415   Object Totals
          0          0         16          0          0          0   (incl. Generated)
-         2          0          0          0          0          0   (incl. Padding)
+         4          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -204,15 +211,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-       104         22         24          0       1024       2335   Grand Totals
-       104         22         24          0       1024       2335   ELF Image Totals
-       104         22         24          0          0          0   ROM Totals
+       152         22         24          0       1024       2635   Grand Totals
+       152         22         24          0       1024       2635   ELF Image Totals
+       152         22         24          0          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                  128 (   0.13kB)
+    Total RO  Size (Code + RO Data)                  176 (   0.17kB)
     Total RW  Size (RW Data + ZI Data)              1024 (   1.00kB)
-    Total ROM Size (Code + RO Data + RW Data)        128 (   0.13kB)
+    Total ROM Size (Code + RO Data + RW Data)        176 (   0.17kB)
 
 ==============================================================================
 
