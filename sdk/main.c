@@ -13,5 +13,5 @@ int main(){
 		syscall(0x21,cnt++);
 	}
 	
-	return 0;
+	return 0;//需要重定义sys_exit 否则会出现软件中断
 }
