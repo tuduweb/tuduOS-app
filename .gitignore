@@ -37,7 +37,7 @@ JLinkSettings.ini
 DebugConfig/
 RTE/
 settings/
-Objects/
-Listings/
-#*.uvguix*
+**/Objects/
+**/Listings/
+*.uvguix*
 cconfig.h
