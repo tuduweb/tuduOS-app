@@ -7,41 +7,81 @@
                 THUMB
 
 
+;Reset_Handler   PROC
+;                EXPORT  Reset_Handler                       [WEAK]
+;                IMPORT  __main
+                ;IMPORT  SystemInit
+                ;LDR     R0, =SystemInit
+                ;BLX     R0
+;                ENDP
 
 ; Vector Table Mapped to Address 0 at Reset
                 AREA    RESET, CODE, READONLY
                 IMPORT  |Region$$Table$$Limit|
 
-;Reset_Handler   PROC
-;                EXPORT  Reset_Handler                       [WEAK]
-                IMPORT  __main
-                ;IMPORT  SystemInit
-                ;LDR     R0, =SystemInit
-                ;BLX     R0
-                LDR     R0, main_entry
-                ADR     R1, main_entry
+                LDR     R0, app_entry_addr
+                ADR     R1, app_entry_addr
                 ADD     R0, R1
                 BX      R0
-;                ENDP
 
-				;DCD		12340001
-				;IMPORT |Image$$ER_IROM1$$RO$$Length|
-				;DCD		|Image$$ER_IROM1$$RO$$Length|;RO Length
-				;DCD		12340002
-				;DCB		TESTVAL;the input edit value "app"(or other value)
-									;by coding some KEIL symbol or KEIL built-in grammar
-				
 ;__Vectors
 				IMPORT |Image$$text$$RO$$Length|
-                DCB     "LWP.b0724"
-                
-data_addr       DCD     |Image$$text$$RO$$Length|;RO Length;DCD     |Region$$Table$$Limit| - . + .		
+				IMPORT |Image$$text$$RW$$Length|
+				IMPORT |Image$$bss$$RW$$Length|
+				IMPORT |Image$$bss$$ZI$$Length|
+				IMPORT |Image$$data$$RW$$Length|
+				IMPORT |Image$$data$$ZI$$Length|
 
-                DCD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+				IMPORT |Image$$bss$$Limit|
+				IMPORT |Image$$bss$$Base|
+    
+                IMPORT  |Region$$Table$$Base|
+                IMPORT  |Region$$Table$$Limit|
+                IMPORT  |Region$$Table$$Length|
+
+
+
+                IMPORT  |Image$$bss$$Length|
+                IMPORT  |Image$$text$$Length|
+
+                DCB     "LWP.b200819"
+                
+
+data_addr       DCD     |Image$$text$$RO$$Length|;RO Length;DCD     |Region$$Table$$Limit| - . + .		
+                DCD     |Image$$text$$RW$$Length|
+
+
+                DCD     |Image$$bss$$RW$$Length|
+                DCD     |Image$$bss$$ZI$$Length|
+                DCD     |Image$$data$$RW$$Length|
+                DCD     |Image$$data$$ZI$$Length|
+
+                DCD     |Image$$bss$$Limit| - .
+                DCD     |Image$$bss$$Base| - .
+
+
+                DCD     1,2,3,4,5,6,7,8,8,7,6,5,4,3,2,1
+
+                DCD     |Image$$text$$Length|       ;code+RO
+                DCD     |Image$$bss$$ZI$$Length|    ;ZI
+                DCD     |Image$$data$$RW$$Length|   ;RW
+                DCD     |Image$$bss$$ZI$$Length| + |Image$$data$$RW$$Length|
+
+                DCD     1,2,3,4,5,6,7,8,8,7,6,5,4,3,2,1
+
 
 ;__Vectors_End
-main_entry      DCD     __main - .
+                IMPORT  __main
+app_entry_addr  DCD     __main - .
 
+
+main_entry      PROC
+                LDR     R0, main_entry_addr
+                ADR     R1, main_entry_addr
+                ADD     R0, R1
+                BX      R0
+                ENDP
+main_entry_addr      DCD     __main - .
 
                 AREA    RESET, CODE, READONLY
 
