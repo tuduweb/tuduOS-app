@@ -339,7 +339,7 @@
               <MiscControls>--lower_rwpi --lower_ropi</MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>./iinclude</IncludePath>
+              <IncludePath>./iinclude;./armcc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -394,11 +394,6 @@
           <GroupName>C</GroupName>
           <Files>
             <File>
-              <FileName>syscall.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\syscall.c</FilePath>
-            </File>
-            <File>
               <FileName>syscall.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\syscall.s</FilePath>
@@ -412,6 +407,16 @@
               <FileName>retarget.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\armcc\retarget.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\armcc\memory.c</FilePath>
+            </File>
+            <File>
+              <FileName>tlsf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\armcc\tlsf.c</FilePath>
             </File>
           </Files>
         </Group>
