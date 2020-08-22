@@ -46,7 +46,7 @@
 
                 DCB     "LWP.b200819"
                 
-
+				ALIGN
 data_addr       DCD     |Image$$text$$RO$$Length|;RO Length;DCD     |Region$$Table$$Limit| - . + .		
                 DCD     |Image$$text$$RW$$Length|
 
@@ -113,11 +113,13 @@ main_entry_addr      DCD     __main - .
                 EXPORT  __user_initial_stackheap
                 
 ;R0 heap_base | R1 stack_base | R2 heap_limit | R3 stack_limit
+;R9 | RW | ZI_OTHER | HEAP | STACK|
+;   (          ZI Length          )
 ;R2 >= R0 R1 > R3
 ;stack 栈 栈顶地址 < 栈底
 ;heap 堆 堆底 < 堆顶
 ;stack(limit) stack+size (sp) heap heap+size(limit)
-__user_initial_stackheap
+__user_initial_stackheap	PROC
                 IMPORT |HEAP$$Base|
                 IMPORT |STACK$$Base|
                 IMPORT |HEAP$$Length|
@@ -132,54 +134,32 @@ __user_initial_stackheap
                 ; addr - T_limit + R9
                 ; addr + (R9 - T_limit)
 
-                LDR     R0, table_limit
-                ADR     R1, table_limit
-                ADD     R0, R1
-                SUB     R1, R9, R1;rw_addr_offset
-                
-                LDR     R0, heap_base;data
-				ADR		R2,	heap_base;heap
-                ADD     R0, R2;heap_base
-                ADD     R0, R1;heap_base + addr_offset
-
-                LDR     R3, stack_limit
-                ADR     R2, stack_limit
-                ADD     R3, R2
-                ADD     R3, R1
+                LDR     R0, rw_length
+                LDR     R1, zi_length
+                ADD     R1, R0          ;ALL_ZI_Length
+                ADD     R1, R9          ;R1+R9=stack_base
+                MOV     R4, R1
+                LDR     R2, stack_length
+                SUB     R1, R2          ;R1 = stack_limit
+                MOV     R3, R1
 
                 LDR     R2, heap_length
-                ADD     R2, R0
-
-                LDR     R1, stack_length
-                ADD     R1, R3
+                SUB     R1, R2          ;R0 = heap_base
+                MOV     R0, R1
+                MOV     R2, R3
+                MOV     R1, R4
 
                 BX      LR
+				ENDP
 
-                ;LDR     R0, heap_base;data
-				;ADR		R1,	heap_base;heap
-                ;ADD     R0, R0, R1;heap_base
-
-				;LDR		R1, stack_base;RW base + offset
-                ;ADR     R2, stack_base
-                ;ADD     R1, R2
-
-                ;LDR     R2, heap_limit
-                ;ADR     R3, heap_limit
-                ;ADD     R2, R3
-
-                ;LDR     R3, stack_limit
-                ;ADR     R4, stack_limit
-                ;ADD     R3, R4
-                ;BX      LR
-
-
-table_limit     DCD |Region$$Table$$Limit| - .
-stack_limit     DCD |STACK$$Base| - .
 stack_base      DCD |STACK$$Limit| - .
+bss_base        DCD |Image$$bss$$Base| - .
 heap_base       DCD |HEAP$$Base| - .
 heap_limit      DCD |HEAP$$Limit| - .
 heap_length     DCD |HEAP$$Length|
 stack_length    DCD |STACK$$Length|
+rw_length       DCD |Image$$data$$RW$$Length|
+zi_length       DCD |Image$$bss$$ZI$$Length|
 
                 ALIGN
 
