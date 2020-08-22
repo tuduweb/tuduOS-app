@@ -39,6 +39,10 @@ rt_thread_t rt_thread_create(const char *name,
 {
     void *user_stack;
     user_stack = malloc(user_stack_size);
+    if(user_stack == RT_NULL)
+    {
+        return RT_NULL;
+    }
     return (rt_thread_t) syscall(0x60, name, entry, parameter, user_stack, user_stack_size, priority);//tick
 }
 
