@@ -51,3 +51,27 @@ rt_err_t rt_thread_startup(rt_thread_t thread)
 {
     return (rt_err_t) syscall(0x61, thread);
 }
+
+rt_err_t rt_thread_mdelay(rt_int32_t ms)
+{
+    return (rt_err_t) syscall(0x62, ms);
+}
+
+rt_mailbox_t rt_mb_create(const char *name, rt_size_t size, rt_uint8_t flag)
+{
+    return (rt_mailbox_t) syscall(0x63, name, size, flag);
+}
+rt_err_t rt_mb_delete(rt_mailbox_t mb)
+{
+    return (rt_err_t) syscall(0x64, mb);
+}
+rt_err_t rt_mb_send(rt_mailbox_t mb, rt_ubase_t value)
+{
+    return (rt_err_t) syscall(0x65, mb, value);
+}
+rt_err_t rt_mb_recv(rt_mailbox_t mb, rt_ubase_t *value, rt_int32_t timeout)
+{
+    return (rt_err_t) syscall(0x66, mb, value, timeout);
+}
+
+
