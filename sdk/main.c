@@ -67,6 +67,7 @@ int main(int argc, const char **argv, const char **envp){
 		if(rt_mb_recv(mb, &msg, RT_WAITING_FOREVER) == RT_EOK)
 		{
 			syscall(0x21,msg);
+			rt_mb_delete(mb);//删除，防止溢出(所以要在线程销毁的时候,加上销毁所有生产的资源…)
 			break;
 		}
 		syscall(0x21,cnt--);
