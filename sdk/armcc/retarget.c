@@ -5,8 +5,16 @@
 #pragma import(__use_no_semihosting_swi)
 #pragma import(__use_no_semihosting)
 
+/* 告知连接器不从C库链接使用半主机的函数 */
+
 void _sys_exit(int code) { 
     syscall(0x01,code);
+}
+
+int _sys_write(unsigned int fd, char *buf, int count)
+{
+    int fd2 = fd;
+    return 0;
 }
 
 struct __FILE  { 
@@ -23,7 +31,7 @@ void _ttywrch(int ch)
     ch = ch;
 }
 
-int fputc(int ch, FILE *f){      
+int fputc(int ch, FILE *f){
     return 0;
 }
 
@@ -74,4 +82,21 @@ rt_err_t rt_mb_recv(rt_mailbox_t mb, rt_ubase_t *value, rt_int32_t timeout)
     return (rt_err_t) syscall(0x66, mb, value, timeout);
 }
 
-
+void *lwt_shm_alloc(int size) {
+    return (void *)syscall(0x68, size);
+}
+rt_err_t lwt_shm_free(void* addr) {
+    return (rt_err_t)syscall(0x69, addr);
+}
+rt_err_t lwt_shm_retain(void* addr) {
+    return (rt_err_t)syscall(0x6A, addr);
+}
+#include <stdarg.h>
+//VA_LIST 是在C语言中解决变参问题的一组宏，所在头文件：#include <stdarg.h>，用于获取不确定个数的参数。
+void rt_kprintf(const char *fmt, ...)
+{
+    va_list argList;
+    va_start(argList, fmt);
+    syscall(0x67, fmt, argList);
+    va_end(argList);
+}
